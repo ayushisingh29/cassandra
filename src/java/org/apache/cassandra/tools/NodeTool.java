@@ -211,6 +211,7 @@ public class NodeTool
                 ReloadSslCertificates.class,
                 EnableAuditLog.class,
                 DisableAuditLog.class,
+                GetAuditLogStatus.class,
                 EnableOldProtocolVersions.class,
                 DisableOldProtocolVersions.class
         );

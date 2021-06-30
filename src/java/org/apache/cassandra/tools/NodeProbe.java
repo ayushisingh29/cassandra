@@ -1818,6 +1818,10 @@ public class NodeProbe implements AutoCloseable
         this.enableAuditLog(loggerName, Collections.emptyMap(), includedKeyspaces, excludedKeyspaces, includedCategories, excludedCategories, includedUsers, excludedUsers);
     }
 
+    public String getAuditLogStatus() {
+        return ssProxy.isAuditLogEnabled() ? "enabled" : "disabled";
+    }
+
     public void enableOldProtocolVersions()
     {
         ssProxy.enableNativeTransportOldProtocolVersions();
