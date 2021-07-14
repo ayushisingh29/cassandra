@@ -19,7 +19,6 @@
 package org.apache.cassandra.audit;
 
 import java.nio.ByteBuffer;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.cassandra.config.DatabaseDescriptor;
 import org.apache.cassandra.cql3.CQLStatement;
 import org.apache.cassandra.cql3.QueryOptions;
+import org.apache.cassandra.cql3.QueryProcessor;
 import org.apache.cassandra.cql3.statements.ParsedStatement;
 import org.apache.cassandra.exceptions.AuthenticationException;
 import org.apache.cassandra.exceptions.ConfigurationException;
@@ -162,7 +162,7 @@ public class AuditLogManager
                 builder.setType(AuditLogEntryType.REQUEST_FAILURE);
             }
 
-            builder.appendToOperation(e.getMessage());
+            builder.appendToOperation(QueryProcessor.getObfuscator().obfuscate(e.getMessage()));
 
             log(builder.build());
         }

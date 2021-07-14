@@ -124,7 +124,7 @@ public class QueryMessage extends Message.Request
                 ParsedStatement.Prepared parsedStatement = QueryProcessor.parseStatement(query, state);
                 AuditLogEntry auditEntry = new AuditLogEntry.Builder(state.getClientState())
                                            .setType(parsedStatement.statement.getAuditLogContext().auditLogEntryType)
-                                           .setOperation(query)
+                                           .setOperation(QueryProcessor.possiblyObfuscateQuery(parsedStatement.statement, query))
                                            .setTimestamp(logTime)
                                            .setScope(parsedStatement.statement)
                                            .setKeyspace(state, parsedStatement.statement)
@@ -147,7 +147,7 @@ public class QueryMessage extends Message.Request
             if (auditLogEnabled)
             {
                 AuditLogEntry auditLogEntry = new AuditLogEntry.Builder(state.getClientState())
-                                              .setOperation(query)
+                                              .setOperation(QueryProcessor.possiblyObfuscateQuery(null, query))
                                               .setOptions(options)
                                               .build();
                 auditLogManager.log(auditLogEntry, e);

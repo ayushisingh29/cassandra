@@ -85,7 +85,7 @@ public class PrepareMessage extends Message.Request
             {
                 ParsedStatement.Prepared parsedStmt = QueryProcessor.parseStatement(query, state);
                 AuditLogEntry auditLogEntry = new AuditLogEntry.Builder(state.getClientState())
-                                              .setOperation(query)
+                                              .setOperation(QueryProcessor.possiblyObfuscateQuery(parsedStmt.statement, query))
                                               .setType(AuditLogEntryType.PREPARE_STATEMENT)
                                               .setScope(parsedStmt.statement)
                                               .setKeyspace(parsedStmt.statement)
@@ -103,7 +103,7 @@ public class PrepareMessage extends Message.Request
             if (auditLogEnabled)
             {
                 AuditLogEntry auditLogEntry = new AuditLogEntry.Builder(state.getClientState())
-                                              .setOperation(query)
+                                              .setOperation(QueryProcessor.possiblyObfuscateQuery(null, query))
                                               .setType(AuditLogEntryType.PREPARE_STATEMENT)
                                               .build();
                 auditLogManager.log(auditLogEntry, e);

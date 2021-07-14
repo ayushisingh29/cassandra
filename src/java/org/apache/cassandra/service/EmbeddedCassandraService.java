@@ -54,4 +54,9 @@ public class EmbeddedCassandraService
         cassandraDaemon.init(null);
         cassandraDaemon.start();
     }
+
+    public void stop()
+    {
+        cassandraDaemon.stop();
+    }
 }

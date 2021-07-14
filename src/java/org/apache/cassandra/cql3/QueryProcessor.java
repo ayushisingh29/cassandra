@@ -66,6 +66,7 @@ public class QueryProcessor implements QueryHandler
     private static final Logger logger = LoggerFactory.getLogger(QueryProcessor.class);
     private static final MemoryMeter meter = new MemoryMeter().withGuessing(MemoryMeter.Guess.FALLBACK_BEST).ignoreKnownSingletons();
     private static final long MAX_CACHE_PREPARED_MEMORY = Runtime.getRuntime().maxMemory() / 256;
+    private final static PasswordObfuscator passwordObfuscator = new PasswordObfuscator();
 
     private static final EntryWeigher<MD5Digest, ParsedStatement.Prepared> cqlMemoryUsageWeigher = new EntryWeigher<MD5Digest, ParsedStatement.Prepared>()
     {
@@ -693,5 +694,17 @@ public class QueryProcessor implements QueryHandler
             Predicate<Function> matchesFunction = f -> ksName.equals(f.name().keyspace) && functionName.equals(f.name().name);
             Iterators.removeIf(statements, statement -> Iterables.any(statement.statement.getFunctions(), matchesFunction));
         }
+    }
+
+    @VisibleForTesting
+    public static PasswordObfuscator getObfuscator()
+    {
+        return passwordObfuscator;
+    }
+
+    public static String possiblyObfuscateQuery(CQLStatement statement, String query)
+    {
+        // Statement might be null as side-effect of failed parsing, originates from QueryMessage#execute
+        return null == statement || statement instanceof AuthenticationStatement ? getObfuscator().obfuscate(query) : query;
     }
 }

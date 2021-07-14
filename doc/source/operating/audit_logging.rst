@@ -51,6 +51,13 @@ Each audit log implementation has access to the following attributes, and for th
  - ``scope`` - Table/Aggregate name/ function name/ trigger name etc., as applicable
  - ``operation`` - CQL command being executed
 
+What Audit Logging does not Log?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Audit logging does not log:
+1. Configuration changes made in cassandra.yaml
+2. Nodetool Commands
+3. Passwords mentioned as part of DCL statements. Instead everything after the appearance of the word password in DCL statements is obfuscated as *** as well as in failed to parse statements.
+
 How to configure
 ^^^^^^^^^^^^^^^^^^
 Auditlog can be configured using cassandra.yaml. If you want to try Auditlog on one node, it can also be enabled and configured using ``nodetool``.

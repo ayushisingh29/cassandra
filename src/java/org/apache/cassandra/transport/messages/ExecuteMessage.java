@@ -27,6 +27,7 @@ import org.apache.cassandra.audit.AuditLogManager;
 import org.apache.cassandra.cql3.CQLStatement;
 import org.apache.cassandra.cql3.QueryHandler;
 import org.apache.cassandra.cql3.QueryOptions;
+import org.apache.cassandra.cql3.QueryProcessor;
 import org.apache.cassandra.cql3.statements.ParsedStatement;
 import org.apache.cassandra.exceptions.PreparedQueryNotFoundException;
 import org.apache.cassandra.service.ClientState;
@@ -136,7 +137,7 @@ public class ExecuteMessage extends Message.Request
             {
                 AuditLogEntry auditEntry = new AuditLogEntry.Builder(state.getClientState())
                                            .setType(statement.getAuditLogContext().auditLogEntryType)
-                                           .setOperation(prepared.rawCQLStatement)
+                                           .setOperation(QueryProcessor.possiblyObfuscateQuery(statement, prepared.rawCQLStatement))
                                            .setTimestamp(logTime)
                                            .setScope(statement)
                                            .setKeyspace(state, statement)
@@ -160,7 +161,7 @@ public class ExecuteMessage extends Message.Request
                 if (e instanceof PreparedQueryNotFoundException)
                 {
                     AuditLogEntry auditLogEntry = new AuditLogEntry.Builder(state.getClientState())
-                                                  .setOperation(toString())
+                                                  .setOperation(QueryProcessor.possiblyObfuscateQuery(null, toString()))
                                                   .setOptions(options)
                                                   .build();
                     auditLogManager.log(auditLogEntry, e);
@@ -171,7 +172,7 @@ public class ExecuteMessage extends Message.Request
                     if (prepared != null)
                     {
                         AuditLogEntry auditLogEntry = new AuditLogEntry.Builder(state.getClientState())
-                                                      .setOperation(toString())
+                                                      .setOperation(QueryProcessor.possiblyObfuscateQuery(prepared.statement, toString()))
                                                       .setType(prepared.statement.getAuditLogContext().auditLogEntryType)
                                                       .setScope(prepared.statement)
                                                       .setKeyspace(state, prepared.statement)
