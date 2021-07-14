@@ -36,9 +36,12 @@ public class GetAuditLogStatusTest extends CQLTester
     @Test
     public void testGetAuditLogStatus() throws Exception
     {
+        String enabled = "Audit logs: enabled\n";
         ToolRunner.invokeNodetool("enableauditlog");
-        assertEquals("enabled", ToolRunner.invokeNodetool("getauditlogstatus"));
+        assertEquals(enabled, ToolRunner.invokeNodetool("getauditlogstatus").getStdout());
+
+        String disabled = "Audit logs: disabled\n";
         ToolRunner.invokeNodetool("disableauditlog");
-        assertEquals("disabled", ToolRunner.invokeNodetool("getauditlogstatus"));
+        assertEquals(disabled, ToolRunner.invokeNodetool("getauditlogstatus").getStdout());
     }
 }
